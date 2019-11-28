@@ -1,0 +1,79 @@
+﻿@model EmployeeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Scripts
+{
+    <script src="~/lib/angularjs/angular.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.ErrorMessage
+    </div>
+}
+else if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success" role="alert">
+        @Model.SuccessMessage
+    </div>
+}
+<div class="row">
+    <div class="col-md-4">
+        <div ng-app="MyApp" ng-controller="EmpController">
+            <form novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <input type="text" class="form-control" asp-for="Name" placeholder="Full name" ng-model="Employee.Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address"></label>
+                    <input type="text" class="form-control" asp-for="Address" placeholder="Address" ng-model="Employee.Address" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Phone"></label>
+                    <input type="text" class="form-control" asp-for="Phone" placeholder="Phone" ng-model="Employee.Phone" />
+                </div>
+
+                <input type="submit" class="btn btn-primary" value="Submit" ng-click="AddData()" />
+            </form>
+        </div>
+        </div>
+    </div>
+        <script type="text/javascript">
+            var app = angular.module("MyApp", []);
+            app.controller('EmpController', function ($scope, $http, $window) {
+
+                //$scope.Employee = {
+                //    Id: 0,
+                //    Name: '',
+                //    Address: '',
+                //    Phone: ''
+                //};
+
+                $scope.AddData = function () {
+                    $http({
+                        method: 'POST',
+                        url: '/Employee/Add',
+                        dataType: 'json',
+                        params: $scope.Employee,
+                        headers: { "Content-Type": "application/json" }
+                    })
+                        .then(function (response) {
+
+                            $window.location.href = '/Employee/Index';
+                        },
+                            function (response) {
+                                alert("error")
+                            }
+                        );
+
+                };
+            });
+        </script>

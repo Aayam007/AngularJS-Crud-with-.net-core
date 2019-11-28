@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Add New</button>
+<hr />
+<div ng-app="App" ng-controller="EmpController">
+
+    <input type="text" placeholder="Search" class="form-control" ng-model="search" />
+    <br />
+    <table class="table table-hover">
+        <thead>
+            <tr>
+
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr ng-repeat="emp in employees  | filter : search">
+
+                <td>{{emp.name}}</td>
+                <td>{{emp.address}}</td>
+                <td>{{emp.phone}}</td>
+                <td>
+                    <input type="button" class="btn btn-success" value="Edit" ng-click="EditEmployee(emp.id)" />
+                    <input type="button" class="btn btn-danger" value="Delete" ng-click="DeleteEmployee(emp.id)" />
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="~/lib/angularjs/angular.js"></script>
+<script type="text/javascript">
+    var app = angular.module("App", []);
+    app.controller('EmpController', function ($scope, $http, $window) {
+
+
+        $http.get('/Employee/GetAllEmployee')
+            .then(function (result) {
+
+                $scope.employees = result.data;
+            },
+                function (result) {
+                    console.log(result);
+                });
+
+        $scope.DeleteEmployee = function (id) {
+
+            varIsConf = confirm(' Are you sure Want to delete ?');
+            if (varIsConf) {
+                $http.post("/Employee/Delete?id=" + id)
+                    .then(function (result) {
+
+                        $window.location.href = '/Employee/Index';
+
+                    },
+                        function (result) {
+                            console.log(result);
+                        });
+            }
+        }
+
+        $scope.EditEmployee = function (id) {
+            $http({
+                method: 'Get',
+                url: '/Employee/Edit?id=' + id,
+                dataType: 'json',
+                headers: { "Content-Type": "application/json" }
+            })
+                .then(function (response) {
+
+
+                },
+                    function (response) {
+                        alert("error")
+                    }
+                );
+
+        };
+        $scope.EditEmployee = function (id) {
+            window.location.href = '/Employee/Edit?id=' + id;
+        };
+        //$scope.EditEmployee = function (id) {
+        //    debugger
+        //    $http.post("/Employee/Edit?id=" + id)
+        //    .then(function (result) {
+
+        //        $window.location.href = '/Employee/Index';
+        //    },
+        //        function (result) {
+        //            console.log(result);
+        //        });
+
+        //};
+
+    });
+
+
+</script>
+

@@ -1,0 +1,73 @@
+﻿@model TestProject.Models.Employee
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@section Scripts
+{
+    <script src="~/lib/angularjs/angular.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div ng-app="MyApp" ng-controller="EmpController">
+        <form novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                <input type="hidden" asp-for="Id" class="form-control" ng-model="Employee.Id" />
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" ng-model="Employee.Name"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" ng-model="Employee.Address" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" ng-model="Employee.Phone" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" ng-click="EditData()"/>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script type="text/javascript">
+    var app = angular.module("MyApp", []);
+    app.controller('EmpController', function ($scope, $http, $window) {
+
+       
+
+        $scope.EditData = function () {
+            $http({
+                method: 'POST',
+                url: '/Employee/Edit',
+                dataType: 'json',
+                params: $scope.Employee,
+                headers: { "Content-Type": "application/json" }
+            })
+                .then(function (response) {
+
+                    $window.location.href = '/Employee/Index';
+                },
+                    function (response) {
+                        alert("error")
+                    }
+                );
+
+        };
+    });
+</script>
